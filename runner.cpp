@@ -6,6 +6,11 @@ int main() {
 
 	vector<token> tokens = lex.read("test.poem");
 
+	for(size_t i = 0; i < tokens.size(); ++i) {
+		std::cout << tokens[i].get_lexeme() << std::endl;
+	}
+
+
 	parser p("dict");
 
 	vector<statement*> statements = p.parse(tokens);

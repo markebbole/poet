@@ -49,10 +49,12 @@ public:
 	virtual string statement_string(int depth) {
 		string res = get_depth(depth) + "IF\n";
 		res += condition->exp_string(depth+1);
-		res += get_depth(depth) + "THEN\n";
+		res += get_depth(depth) + "THEN{\n";
 		for(size_t i = 0; i < body.size(); ++i) {
 			res += body[i]->statement_string(depth+1) + "\n";
 		}
+
+		res += get_depth(depth) + "}\n";
 
 		return res;
 

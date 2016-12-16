@@ -122,6 +122,10 @@ public:
 		return p_int;
 	}
 
+	virtual EXP_TYPE get_type() {
+		return INT;
+	}
+
 	virtual string exp_string(int d)
 	{
 	  string i = std::to_string(p_int);

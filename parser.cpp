@@ -22,15 +22,22 @@ expression* parser::EXPRESSION(vector<token>& tokens, size_t& first_token, size_
 
 		//is an operator!
 		if(c >= 97 && c <= 105) {
+			cout << lexeme << " is an operator" << endl;
+			first_token++;
 			while(!tokens[first_token].is_newline() && !tokens[first_token].is_word()) { first_token++; }
 
 			expression* left_operand = EXPRESSION(tokens, first_token, last_token);
+			
+
 			if(left_operand == 0) {
 				return 0;
 			}
 
+			cout << "left operand: " << left_operand->get_type() << endl;
+
 			while(!tokens[first_token].is_newline() && !tokens[first_token].is_word()) { first_token++; }
 
+			cout << "start of right exp: " << tokens[first_token].get_lexeme() << endl;
 			expression* right_operand = EXPRESSION(tokens, first_token, last_token);
 			if(right_operand == 0) {
 				return 0;
@@ -51,8 +58,8 @@ expression* parser::EXPRESSION(vector<token>& tokens, size_t& first_token, size_
 
 		do {
 			int_strings.push_back(s);
-			while(!tokens[first_token].is_newline() && !tokens[first_token].is_word()) { first_token++; }
-			s = tokens[first_token++].get_lexeme();
+			first_token++;
+			s = tokens[first_token].get_lexeme();
 
 		}while(dict.num_syllables(s) == 1);
 
@@ -68,6 +75,7 @@ expression* parser::EXPRESSION(vector<token>& tokens, size_t& first_token, size_
 
 
 statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
+	cout << "trying an if statement" << endl;
 	token F1;
 	token F2;
 	if(in_bounds(tokens, next_token)) {
@@ -94,6 +102,8 @@ statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
 		return 0;
 	}
 
+	cout << "first two words are good" << endl;
+
 
 
 	//first part is good
@@ -118,6 +128,8 @@ statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
 
 	expression* condition = EXPRESSION(tokens, next_token, n-1);
 
+
+
 	if(condition == 0) {
 		return 0;
 	}
@@ -132,16 +144,20 @@ statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
 
 	do {
 		statement* b = STATEMENT(tokens, next_token);
+		cout << b->get_type() << endl;
 		if(b == 0) {
 			return 0;
 		}
 
 		//otherwise, add to body list.
 		body.push_back(b);
-		cmp_with_term = tokens[next_token-1];
-
+		cout << "cmp term: " << tokens[next_token-2].get_lexeme()  << "term: " << term.get_lexeme() << endl;
+		cmp_with_term = tokens[next_token-2];
+		cout << dict.is_rhyme(term.get_lexeme(), cmp_with_term.get_lexeme()) <<endl;
 
 	}while(!dict.is_rhyme(term.get_lexeme(), cmp_with_term.get_lexeme()));
+
+	cout << term.get_lexeme() << " and " << cmp_with_term.get_lexeme() << " rhyme." << endl;
 
 	statement* if_statement = statement::make_if_statement(condition, body);
 	return if_statement;
@@ -169,14 +185,18 @@ statement* parser::STATEMENT(vector<token>& tokens, size_t& next_token) {
 
 
 	token_save = next_token;
-
+	cout << "trying to find statement starting with " << tokens[next_token].get_lexeme() << endl;
 
 	s = IF_STATEMENT(tokens, next_token);
 	if(s != 0) {
+
 		return s;
 	}
 
+	
+
 	next_token = token_save;
+	cout << tokens[next_token].get_lexeme() << " not an if statement" << endl;
 
 	s = DUMMY(tokens, next_token);
 

@@ -67,15 +67,34 @@ bool phoneme_dictionary::is_rhyme(string s1, string s2) {
 	vector<string> v1 = get_entry(s1);
 	vector<string> v2 = get_entry(s2);
 
-	int strong_phoneme1;
+	if(v1.size() == 0 || v2.size() == 0) {
+		return false;
+	}
+
+	size_t strong_phoneme1;
+	size_t strong_phoneme2;
 	for(size_t i = 0; i < v1.size(); ++i) {
 		if(v1[i].find('1') != string::npos) {
 			strong_phoneme1 = i;
 		}
+
+
 	}
 
-	for(size_t i = strong_phoneme1; i < v1.size(); ++i) {
-		if(v1[i] != v2[i]) {
+	for(size_t i = 0; i < v2.size(); ++i) {
+		if(v2[i].find('1') != string::npos) {
+			strong_phoneme2 = i;
+		}
+
+		
+	}
+
+	if(v1.size() - strong_phoneme1 != v2.size() - strong_phoneme2) {
+		return false;
+	}
+
+	for(; strong_phoneme1 < v1.size(); strong_phoneme1++, strong_phoneme2++) {
+		if(v1[strong_phoneme1] != v2[strong_phoneme2]) {
 			return false;
 		}
 	}

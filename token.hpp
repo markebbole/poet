@@ -17,6 +17,8 @@ public:
 	bool is_quote();
 	bool is_question();
 
+	bool is_comma();
+
 	bool is_word();
 
 	bool is_newline();
