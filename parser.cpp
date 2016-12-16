@@ -188,8 +188,15 @@ statement* parser::STATEMENT(vector<token>& tokens, size_t& next_token) {
 
 
 vector<statement*> parser::parse(vector<token> tokens) {
-	//size_t next_token = 0;
+	size_t next_token = 0;
 	vector<statement*> statements;
+
+
+
+	while(next_token < tokens.size()) {
+		statement* s = STATEMENT(tokens, next_token);
+		statements.push_back(s);
+	}
 
 	return statements;
 	
