@@ -55,7 +55,7 @@ int phoneme_dictionary::num_syllables(string entry) {
 
 	int c = 0;
 	for(auto& i : vec) {
-		if(i.find('1') != -1 || i.find('0') != -1 || i.find('2') != -1) {
+		if(i.find('1') != string::npos || i.find('0') != string::npos || i.find('2') != string::npos) {
 			c++;
 		}
 	}
@@ -68,13 +68,13 @@ bool phoneme_dictionary::is_rhyme(string s1, string s2) {
 	vector<string> v2 = get_entry(s2);
 
 	int strong_phoneme1;
-	for(int i = 0; i < v1.size(); ++i) {
-		if(v1[i].find('1') != -1) {
+	for(size_t i = 0; i < v1.size(); ++i) {
+		if(v1[i].find('1') != string::npos) {
 			strong_phoneme1 = i;
 		}
 	}
 
-	for(int i = strong_phoneme1; i < v1.size(); ++i) {
+	for(size_t i = strong_phoneme1; i < v1.size(); ++i) {
 		if(v1[i] != v2[i]) {
 			return false;
 		}
@@ -83,17 +83,4 @@ bool phoneme_dictionary::is_rhyme(string s1, string s2) {
 	//todo: also check that v2 has no more phonemes left!
 
 	return true;
-}
-
-
-
-int main() {
-
-	phoneme_dictionary dict;
-
-	dict.read_file("dict");
-	cout << dict.get_entry_string("aback");
-	cout << dict.num_syllables("aback");
-
-	cout << dict.is_rhyme("shift", "misfit");
 }
