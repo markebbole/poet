@@ -1,0 +1,133 @@
+#include <vector>
+#include <string>
+
+using namespace std;
+
+#ifndef EXPRESSION_HPP
+#define EXPRESSION_HPP
+
+
+
+
+
+enum EXP_TYPE { BINOP, INT };
+
+class expression {
+
+public:
+	expression() {}
+	virtual string exp_string(int depth = 0) { return ""; }
+
+
+
+	static expression* make_binop(char c, expression* l, expression* r);
+	static expression* make_integer(vector<string> int_strings);
+
+	virtual EXP_TYPE get_type() { return INT; }
+
+	string get_depth(int d)
+	{
+	 string res = "";
+	 for(int i=0; i < d; i++)
+	   res+="\t";
+	 return res;
+	}
+
+	virtual ~expression() {}
+
+};
+
+
+enum BINOP_TYPE { PLUS, MINUS, MULT, DIV, GT, GEQ, LT, LEQ, EQ };
+
+class binop : public expression {
+	char op;
+	expression* left;
+	expression* right;
+public:
+	binop(char op, expression* left, expression* right) : op(op), left(left), right(right) {
+
+	}
+
+	expression* get_left() {
+		return left;
+	}
+
+	expression* get_right() {
+		return right;
+	}
+
+	BINOP_TYPE get_binop_type() {
+		switch(op) {
+			case 'a': return PLUS;
+			case 'b': return MINUS;
+			case 'c': return MULT;
+			case 'd': return DIV;
+			case 'e': return GT;
+			case 'f': return GEQ;
+			case 'g': return LT;
+			case 'h': return LEQ;
+			case 'i': return EQ;
+			default:
+				break;
+		}
+
+
+	}
+
+	string get_binop_string() {
+		switch(op) {
+			case 'a': return "+";
+			case 'b': return "-";
+			case 'c': return "*";
+			case 'd': return "/";
+			case 'e': return ">";
+			case 'f': return ">=";
+			case 'g': return "<";
+			case 'h': return "<=";
+			case 'i': return "==";
+			default:
+				break;
+		}
+
+		return "ERROR";
+	}
+
+
+	virtual EXP_TYPE get_type() {
+		return BINOP;
+	}
+
+	virtual string exp_string(int d)
+	{
+	  string res =  get_depth(d) + "BINOP: " + get_binop_string() + "\n";
+	  res += get_depth(d) + "LEFT\n";
+	  res += left->exp_string(d+1);
+	  res += get_depth(d) + "RIGHT\n";
+	  res += right->exp_string(d+1);
+	  return res;
+	}
+};
+
+
+class poet_int : public expression {
+	int p_int;
+
+public:
+	poet_int(vector<string> int_strings) {
+		p_int = 0; //for now.
+	}
+
+	int get_int_value() {
+		return p_int;
+	}
+
+	virtual string exp_string(int d)
+	{
+	  string i = std::to_string(p_int);
+	  string res =  get_depth(d) + "Int: " + i + "\n";
+	  return res;
+	}
+};
+
+#endif

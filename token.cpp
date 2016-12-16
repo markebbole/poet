@@ -4,6 +4,10 @@ token::token(string l) {
 	lexeme = l;
 }
 
+token::token() {
+	lexeme = "";
+}
+
 void token::set_lexeme(string l) {
 	lexeme = l;
 }
@@ -18,6 +22,10 @@ bool token::is_question() {
 
 bool token::is_word() {
 	return !is_quote() && !is_question();
+}
+
+bool token::is_newline() {
+	return lexeme == "\n";
 }
 
 string token::get_lexeme() {

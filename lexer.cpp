@@ -30,7 +30,7 @@ vector<token> lexer::read(string filename) {
 				in_word = false;
 				lexeme = "";
 			}
-			else if(t == QUOTE || t == QUESTION) {
+			else if(t == QUOTE || t == QUESTION || t == COMMA) {
 				if(in_word) {
 					token tok(lexeme);
 					tokens.push_back(tok);
@@ -49,6 +49,10 @@ vector<token> lexer::read(string filename) {
 			token tok(lexeme);
 			tokens.push_back(tok);
 		}
+
+		lexeme = "\n";
+		token tok(lexeme);
+		tokens.push_back(tok);
 	}
 
 
@@ -65,13 +69,3 @@ CHAR_TYPE lexer::char_type(char c) {
 		   (c == ',') ? COMMA : OTHER;
 }
 
-
-int main() {
-
-	lexer lex("dict");
-	vector<token> tokens = lex.read("test.poem");
-
-	for(size_t i = 0; i < tokens.size(); ++i) {
-		cout << tokens[i].get_lexeme() << endl;
-	}
-}
