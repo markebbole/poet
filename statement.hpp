@@ -10,7 +10,7 @@
 class expression;
 using namespace std;
 
-enum STATEMENT_TYPE { IF, ASSIGN, DUMMY };
+enum STATEMENT_TYPE { IF, ASSIGN, DUMMY, WHILE };
 class statement {
 
 
@@ -23,6 +23,7 @@ public:
 	static statement* make_if_statement(expression* condition, vector<statement*> body);
 	static statement* make_dummy();
 	static statement* make_assign(string var, expression* val);
+	static statement* make_while_statement(expression* condition, vector<statement*> body);
 
 	string get_depth(int d)
 	{
@@ -63,6 +64,33 @@ public:
 
 	virtual STATEMENT_TYPE get_type() {
 		return IF;
+	}
+};
+
+class while_statement : public statement {
+
+	expression* condition;
+	vector<statement*> body;
+public:
+	while_statement(expression* condition, vector<statement*> body) : condition(condition), body(body) {}
+
+
+	virtual string statement_string(int depth) {
+		string res = get_depth(depth) + "WHILE\n";
+		res += condition->exp_string(depth+1);
+		res += get_depth(depth) + "DO{\n";
+		for(size_t i = 0; i < body.size(); ++i) {
+			res += body[i]->statement_string(depth+1) + "\n";
+		}
+
+		res += get_depth(depth) + "}\n";
+
+		return res;
+
+	}
+
+	virtual STATEMENT_TYPE get_type() {
+		return WHILE;
 	}
 };
 

@@ -84,6 +84,12 @@ statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
 		return 0;
 	}
 
+	string f1_lex = F1.get_lexeme();
+
+	if(f1_lex.size() < 2 || f1_lex[0] > f1_lex[1]) {
+		return 0;
+	}
+
 	//find next word
 	while(in_bounds(tokens, next_token) && !tokens[next_token].is_word()) { next_token++; }
 
@@ -93,7 +99,9 @@ statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
 		return 0;
 	}
 
-	if(!F1.is_word() || !F2.is_word()) {
+
+
+	if(!F1.is_word() || !F2.is_word())  {
 		return 0;
 	}
 
@@ -161,8 +169,109 @@ statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
 
 	statement* if_statement = statement::make_if_statement(condition, body);
 	return if_statement;
+}
 
 
+
+
+
+
+
+statement* parser::WHILE_STATEMENT(vector<token>& tokens, size_t& next_token) {
+	cout << "trying a while statement" << endl;
+	token F1;
+	token F2;
+	if(in_bounds(tokens, next_token)) {
+		F1 = tokens[next_token++];
+	} else {
+		return 0;
+	}
+
+	string f1_lex = F1.get_lexeme();
+
+	if(f1_lex.size() < 2 || f1_lex[0] <= f1_lex[1]) {
+		return 0;
+	}
+
+	//find next word
+	while(in_bounds(tokens, next_token) && !tokens[next_token].is_word()) { next_token++; }
+
+	if(in_bounds(tokens, next_token)) {
+		F2 = tokens[next_token++];
+	} else {
+		return 0;
+	}
+
+
+
+	if(!F1.is_word() || !F2.is_word())  {
+		return 0;
+	}
+
+	//simple alliteration check for now. should be based on phonemes really
+	if(F1.get_lexeme()[0] != F2.get_lexeme()[0]) {
+		return 0;
+	}
+
+	cout << "first two words are good" << endl;
+
+
+
+	//first part is good
+
+	//now find the newline.
+
+	bool found_newline = false;
+	size_t n;
+	for(n = next_token; n < tokens.size(); ++n) {
+		if(tokens[n].is_newline()) {
+			found_newline = true;
+			break;
+		}
+	}
+
+	if(!found_newline) {
+		return 0;
+	}
+
+
+	//now, the tokens from [next_token, n) should be an expression
+
+	expression* condition = EXPRESSION(tokens, next_token, n-1);
+
+
+
+	if(condition == 0) {
+		return 0;
+	}
+
+	next_token = n+1;
+
+	//now, the token at n-1 is the terminator.
+	token term = tokens[n-1];
+
+	vector<statement*> body;
+	token cmp_with_term;
+
+	do {
+		statement* b = STATEMENT(tokens, next_token);
+		cout << b->get_type() << endl;
+		if(b == 0) {
+			return 0;
+		}
+
+		//otherwise, add to body list.
+		body.push_back(b);
+		cout << "cmp term: " << tokens[next_token-2].get_lexeme()  << "term: " << term.get_lexeme() << endl;
+		cmp_with_term = tokens[next_token-2];
+		cout << dict.is_rhyme(term.get_lexeme(), cmp_with_term.get_lexeme()) <<endl;
+
+	}while(!dict.is_rhyme(term.get_lexeme(), cmp_with_term.get_lexeme()));
+
+	cout << term.get_lexeme() << " and " << cmp_with_term.get_lexeme() << " rhyme." << endl;
+
+	statement* while_statement = statement::make_while_statement(condition, body);
+	return while_statement;
 }
 
 bool parser::is_consonant(char c) {
@@ -255,13 +364,16 @@ statement* parser::STATEMENT(vector<token>& tokens, size_t& next_token) {
 		return s;
 	}
 
-	
-
 	next_token = token_save;
 
 
 	cout << tokens[next_token].get_lexeme() << " not an if statement" << endl;
 
+	s = WHILE_STATEMENT(tokens, next_token);
+	if(s != 0) {
+		return s;
+	}
+	next_token = token_save;
 
 	s = ASSIGNMENT(tokens, next_token);
 

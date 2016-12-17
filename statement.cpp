@@ -5,6 +5,12 @@ statement* statement::make_if_statement(expression* condition, vector<statement*
 
 	return s;
 }
+
+statement* statement::make_while_statement(expression* condition, vector<statement*> body) {
+	while_statement* w = new while_statement(condition, body);
+
+	return w;
+}
 statement* statement::make_dummy() {
 	dummy* d = new dummy();
 	return d;
