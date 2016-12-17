@@ -165,6 +165,68 @@ statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
 
 }
 
+bool parser::is_consonant(char c) {
+	return !(c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U');
+}
+
+string parser::get_var(vector<token>& tokens, size_t& next_token) {
+	string var = "";
+	for(size_t i = next_token; i < tokens.size(); ++i) {
+		next_token++;
+		if(!tokens[i].is_word()) { continue; }
+		string curr_lex = tokens[i].get_lexeme();
+
+		for(size_t j = 0; j < curr_lex.size(); ++j) {
+			if(is_consonant(curr_lex[j])) {
+				var += curr_lex[j];
+				if(var.size() == 2) {
+					return var;
+				}
+			}
+		}
+	}
+
+
+
+	return ""; //failure
+}
+
+statement* parser::ASSIGNMENT(vector<token>& tokens, size_t& next_token) {
+	token first;
+
+	string var = get_var(tokens, next_token);		
+
+	if(var == "") {
+		return 0;
+	}
+
+	bool found_newline = false;
+	size_t n;
+	for(n = next_token; n < tokens.size(); ++n) {
+		if(tokens[n].is_newline()) {
+			found_newline = true;
+			break;
+		}
+	}
+
+	if(!found_newline) {
+		return 0;
+	}
+
+	//now we have a valid variable. find the expression
+	expression* val = EXPRESSION(tokens, next_token, n-1);
+
+	if(val == 0) {
+		return 0;
+	}
+
+	next_token = n+1;
+	statement* assign = statement::make_assign(var, val);
+
+	return assign;
+
+}
+
 
 statement* parser::DUMMY(vector<token>& tokens, size_t& next_token) {
 	while(!tokens[next_token++].is_newline()) {
@@ -196,7 +258,18 @@ statement* parser::STATEMENT(vector<token>& tokens, size_t& next_token) {
 	
 
 	next_token = token_save;
+
+
 	cout << tokens[next_token].get_lexeme() << " not an if statement" << endl;
+
+
+	s = ASSIGNMENT(tokens, next_token);
+
+	if(s != 0) {
+		return s;
+	}
+
+	next_token = token_save;
 
 	s = DUMMY(tokens, next_token);
 

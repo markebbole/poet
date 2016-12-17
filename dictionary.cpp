@@ -28,7 +28,6 @@ void phoneme_dictionary::read_file(string filepath) {
 
 
 vector<string> phoneme_dictionary::get_entry(string entry) {
-	transform(entry.begin(), entry.end(), entry.begin(), ::toupper);
 	vector<string> res;
 	if(dictionary.count(entry) > 0) {
 		res = dictionary[entry];

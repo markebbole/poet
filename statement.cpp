@@ -9,3 +9,9 @@ statement* statement::make_dummy() {
 	dummy* d = new dummy();
 	return d;
 }
+
+statement* statement::make_assign(string var, expression* val) {
+	assign_statement* a = new assign_statement(var, val);
+
+	return a;
+}

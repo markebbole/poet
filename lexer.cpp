@@ -1,5 +1,5 @@
 #include "lexer.hpp"
-
+#include <iostream>
 
 vector<token> lexer::read(string filename) {
 	vector<token> tokens;
@@ -18,6 +18,9 @@ vector<token> lexer::read(string filename) {
 			CHAR_TYPE t = char_type(c);
 
 			if(t == LETTER) {
+				if(c >= 97 && c <= 122) {
+					c -= 32; //to uppercase
+				}
 				lexeme += c;
 				in_word = true;
 			}
@@ -62,7 +65,7 @@ vector<token> lexer::read(string filename) {
 
 CHAR_TYPE lexer::char_type(char c) {
 
-	return (c >= 65 && c <= 90) || (c >= 97 && c <= 122) ? LETTER :
+	return ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 39) ? LETTER :
 		   (c == ' ' || c == '\n' || c == '\t') ? WHITESPACE :
 		   (c == '\"') ? QUOTE :
 		   (c == '?') ? QUESTION :

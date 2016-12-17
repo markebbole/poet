@@ -22,6 +22,7 @@ public:
 
 	static statement* make_if_statement(expression* condition, vector<statement*> body);
 	static statement* make_dummy();
+	static statement* make_assign(string var, expression* val);
 
 	string get_depth(int d)
 	{
@@ -62,6 +63,26 @@ public:
 
 	virtual STATEMENT_TYPE get_type() {
 		return IF;
+	}
+};
+
+
+class assign_statement : public statement {
+	string var;
+	expression* val;
+public:
+	assign_statement(string v, expression* val) : var(v), val(val) {}
+
+	virtual string statement_string(int d) {
+		string res = get_depth(d) + "ASSIGN " + var + "\n";
+		res += get_depth(d) + "VAL\n";
+		res += val->exp_string(d+1);
+
+		return res;
+	}
+
+	virtual STATEMENT_TYPE get_type() {
+		return ASSIGN;
 	}
 };
 

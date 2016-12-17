@@ -23,6 +23,10 @@ public:
 	statement* IF_STATEMENT(vector<token>& tokens, size_t& next_token);
 	statement* DUMMY(vector<token>& tokens, size_t& next_token);
 	statement* STATEMENT(vector<token>& tokens, size_t& next_token);
+	statement* ASSIGNMENT(vector<token>& tokens, size_t& next_token);
+
+	string get_var(vector<token>& tokens, size_t& next_token);
+	bool is_consonant(char c);
 	vector<statement*> parse(vector<token> tokens);
 
 };
