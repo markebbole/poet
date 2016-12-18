@@ -28,6 +28,8 @@ public:
 	statement* ASSIGNMENT(vector<token>& tokens, size_t& next_token);
 
 	string get_var(vector<token>& tokens, size_t& next_token);
+	vector<statement*> get_body(vector<token>& tokens, size_t& next_token, token term);
+	int find_newline(vector<token>& tokens, size_t & next_token);
 	bool is_consonant(char c);
 	vector<statement*> parse(vector<token> tokens);
 

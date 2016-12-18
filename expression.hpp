@@ -24,6 +24,10 @@ public:
 	static expression* make_integer(vector<string> int_strings);
 	static expression* make_id(string id);
 
+	static bool is_consonant(char c) {
+		return !(c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U');
+	}
+
 	virtual EXP_TYPE get_type() { return INT; }
 
 	string get_depth(int d)
@@ -39,7 +43,7 @@ public:
 };
 
 
-enum BINOP_TYPE { PLUS, MINUS, MULT, DIV, GT, GEQ, LT, LEQ, EQ };
+enum BINOP_TYPE { PLUS, MINUS, MULT, DIV, GT, GEQ, LT, LEQ, EQ, MOD };
 
 class binop : public expression {
 	char op;
@@ -69,6 +73,7 @@ public:
 			case 'g': return LT;
 			case 'h': return LEQ;
 			case 'i': return EQ;
+			case 'j': return MOD;
 			default:
 				break;
 		}
@@ -87,6 +92,7 @@ public:
 			case 'g': return "<";
 			case 'h': return "<=";
 			case 'i': return "==";
+			case 'j': return "\%";
 			default:
 				break;
 		}
@@ -115,9 +121,7 @@ class poet_int : public expression {
 	int p_int;
 
 public:
-	poet_int(vector<string> int_strings) {
-		p_int = 0; //for now.
-	}
+	poet_int(vector<string> int_strings);
 
 	int get_int_value() {
 		return p_int;
