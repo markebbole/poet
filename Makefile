@@ -3,7 +3,7 @@ CFLAGS = -g -Wall -std=c++11
 INC=-.
 INC_PARAMS=$(foreach d, $(INC), -I$d)
 
-OBJs =   expression.o token.o dictionary.o statement.o parser.o lexer.o runner.o
+OBJs =   expression.o token.o dictionary.o statement.o parser.o lexer.o interpreter.o runner.o
 
 default: parser
 
@@ -22,6 +22,9 @@ expression.o: expression.cpp
 
 parser.o: parser.cpp
 	${CC} ${CFLAGS} ${INC_PARAMS} -c parser.cpp
+
+interpreter.o: interpreter.cpp
+	${CC} ${CFLAGS} ${INC_PARAMS} -c interpreter.cpp
 
 dictionary.o: dictionary.cpp
 	${CC} ${CFLAGS} ${INC_PARAMS} -c dictionary.cpp

@@ -1,5 +1,7 @@
 #include <vector>
 #include <string>
+#include <iostream>
+
 
 using namespace std;
 
@@ -75,8 +77,13 @@ public:
 			case 'i': return EQ;
 			case 'j': return MOD;
 			default:
+				{
+				cout << "ERROR WITH BINOP TYPE" << endl;
 				break;
+				}
 		}
+
+		return PLUS;
 
 
 	}

@@ -250,11 +250,6 @@ statement* parser::WHILE_STATEMENT(vector<token>& tokens, size_t& next_token) {
 	next_token = n+1;
 
 	//now, the token at n-1 is the terminator.
-	token term = tokens[n-1];
-
-	next_token = n+1;
-
-	//now, the token at n-1 is the terminator.
 	token term = tokens[n1];
 
 	vector<statement*> body = get_body(tokens, next_token, term);

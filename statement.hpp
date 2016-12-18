@@ -43,9 +43,10 @@ public:
 
 class if_statement : public statement {
 
+public:
 	expression* condition;
 	vector<statement*> body;
-public:
+
 	if_statement(expression* condition, vector<statement*> body) : condition(condition), body(body) {}
 
 
@@ -70,9 +71,11 @@ public:
 
 class while_statement : public statement {
 
+	
+public:
+
 	expression* condition;
 	vector<statement*> body;
-public:
 	while_statement(expression* condition, vector<statement*> body) : condition(condition), body(body) {}
 
 
@@ -97,9 +100,10 @@ public:
 
 
 class print_statement : public statement {
-	expression* print_exp;
+	
 
 public:
+	expression* print_exp;
 	print_statement(expression* p) : print_exp(p) {}
 
 	virtual string statement_string(int d) {
@@ -115,9 +119,11 @@ public:
 
 
 class assign_statement : public statement {
+	
+public:
+
 	string var;
 	expression* val;
-public:
 	assign_statement(string v, expression* val) : var(v), val(val) {}
 
 	virtual string statement_string(int d) {

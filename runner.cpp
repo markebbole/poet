@@ -19,5 +19,9 @@ int main() {
 		std::cout << statements[i]->statement_string() << std::endl;
 	}
 
+	interpreter evaluator;
+
+	evaluator.interpret(statements);
+
 	
 }
