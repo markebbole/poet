@@ -21,6 +21,7 @@ public:
 
 	expression* EXPRESSION(vector<token>& tokens, size_t& first_token, size_t last_token);
 	statement* IF_STATEMENT(vector<token>& tokens, size_t& next_token);
+	statement* PRINT(vector<token>& tokens, size_t& next_token);
 	statement* WHILE_STATEMENT(vector<token>& tokens, size_t & next_token);
 	statement* DUMMY(vector<token>& tokens, size_t& next_token);
 	statement* STATEMENT(vector<token>& tokens, size_t& next_token);

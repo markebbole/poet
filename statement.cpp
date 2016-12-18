@@ -21,3 +21,8 @@ statement* statement::make_assign(string var, expression* val) {
 
 	return a;
 }
+
+statement* statement::make_print(expression* exp) {
+	print_statement* p = new print_statement(exp);
+	return p;
+}

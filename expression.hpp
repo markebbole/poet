@@ -10,7 +10,7 @@ using namespace std;
 
 
 
-enum EXP_TYPE { BINOP, INT };
+enum EXP_TYPE { BINOP, INT, ID };
 
 class expression {
 
@@ -22,6 +22,7 @@ public:
 
 	static expression* make_binop(char c, expression* l, expression* r);
 	static expression* make_integer(vector<string> int_strings);
+	static expression* make_id(string id);
 
 	virtual EXP_TYPE get_type() { return INT; }
 
@@ -131,6 +132,26 @@ public:
 	  string i = std::to_string(p_int);
 	  string res =  get_depth(d) + "Int: " + i + "\n";
 	  return res;
+	}
+};
+
+class identifier : public expression {
+	string id;
+
+public:
+	identifier(string id) : id(id) {}
+
+	string get_id() {
+		return id;
+	}
+
+	virtual EXP_TYPE get_type() {
+		return ID;
+	}
+
+	virtual string exp_string(int d) {
+		string res = get_depth(d) + "ID: " + id + "\n";
+		return res;
 	}
 };
 

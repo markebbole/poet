@@ -7,6 +7,12 @@ bool in_bounds(vector<token>& tokens, size_t& next_token) {
 expression* parser::EXPRESSION(vector<token>& tokens, size_t& first_token, size_t last_token) {
 	//first word must be 2 syllables, starting with one of the operator letters
 
+	while(in_bounds(tokens, first_token) && !tokens[first_token].is_word()) { first_token++; }
+
+	if(first_token > last_token) {
+		return 0;
+	}
+	
 	token op = tokens[first_token];
 
 	string lexeme = op.get_lexeme();
@@ -45,6 +51,12 @@ expression* parser::EXPRESSION(vector<token>& tokens, size_t& first_token, size_
 
 			expression* binop = expression::make_binop(c, left_operand, right_operand);
 			return binop;
+		} else {
+			//it's an identifier lookup
+			string var = get_var(tokens, first_token);
+
+			expression* id = expression::make_id(var);
+			return id;
 		}
 	}
 
@@ -112,8 +124,6 @@ statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
 
 	cout << "first two words are good" << endl;
 
-
-
 	//first part is good
 
 	//now find the newline.
@@ -170,10 +180,6 @@ statement* parser::IF_STATEMENT(vector<token>& tokens, size_t& next_token) {
 	statement* if_statement = statement::make_if_statement(condition, body);
 	return if_statement;
 }
-
-
-
-
 
 
 
@@ -300,6 +306,48 @@ string parser::get_var(vector<token>& tokens, size_t& next_token) {
 	return ""; //failure
 }
 
+statement* parser::PRINT(vector<token>& tokens, size_t& next_token) {
+
+	int quote1 = -1;
+	int quote2 = -1;
+
+	for(size_t i = next_token; i < tokens.size(); ++i) {
+		//if find a newline before two quotes, not a print
+		if(tokens[i].is_newline()) {
+			return 0;
+		}
+
+		if(tokens[i].is_quote()) {
+			if(quote1 >= 0) {
+				quote2 = i;
+				cout << "quote 2: " << i << endl;
+				break;
+			} else {
+				cout << "quote 1: " << i << endl;
+				quote1 = i;
+			}
+		}
+	}
+
+	
+	if(quote1 >= 0 && quote2 >= 0) {
+		size_t q1 = quote1 +1;
+		size_t q2 = quote2 -1;
+		std::cout << q1 << " " << q2 << endl;
+		expression* print_exp = EXPRESSION(tokens, q1, q2);
+		if(print_exp != 0) {
+			statement* print = statement::make_print(print_exp);
+
+			while(!tokens[next_token++].is_newline()) {
+
+			}
+			return print;
+		}
+	}
+
+	return 0;
+}
+
 statement* parser::ASSIGNMENT(vector<token>& tokens, size_t& next_token) {
 	token first;
 
@@ -357,6 +405,15 @@ statement* parser::STATEMENT(vector<token>& tokens, size_t& next_token) {
 
 	token_save = next_token;
 	cout << "trying to find statement starting with " << tokens[next_token].get_lexeme() << endl;
+
+
+	s = PRINT(tokens, next_token);
+
+	if(s != 0) {
+		return s;
+	}
+
+	next_token = token_save;
 
 	s = IF_STATEMENT(tokens, next_token);
 	if(s != 0) {
